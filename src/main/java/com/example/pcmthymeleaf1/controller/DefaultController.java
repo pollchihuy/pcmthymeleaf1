@@ -26,6 +26,4 @@ public class DefaultController {
 
         return "/contoh/x";
     }
-
-
 }
