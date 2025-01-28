@@ -3,6 +3,7 @@ package com.example.pcmthymeleaf1.httpclient;
 
 import com.example.pcmthymeleaf1.dto.validasi.ValLoginDTO;
 import com.example.pcmthymeleaf1.dto.validasi.ValRegisDTO;
+import com.example.pcmthymeleaf1.dto.validasi.ValVerifyRegisDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,4 +22,7 @@ public interface AuthServices {
 
     @PostMapping("/regis")
     public ResponseEntity<Object> register(@RequestBody ValRegisDTO regisDTO);
+
+    @PostMapping("/verify-regis")
+    public ResponseEntity<Object> verifyRegister(@RequestBody ValVerifyRegisDTO valVerifyRegisDTO);
 }

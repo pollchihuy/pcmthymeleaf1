@@ -19,7 +19,6 @@ public class ValVerifyRegisDTO {
     private String email;
 
 
-
     public String getOtp() {
         return otp;
     }

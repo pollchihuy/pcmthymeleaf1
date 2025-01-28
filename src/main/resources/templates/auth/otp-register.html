@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OTP Email</title>
+    <link th:href="@{/css/verify.css}" rel="stylesheet">
+    <link th:href="@{/css/error.css}" rel="stylesheet">
+    <link th:href="@{/js/verify.js}" rel="stylesheet">
+</head>
+
+<body>
+<div id="for-reload">
+    <section>
+        <div  class="error-box error-danger" >
+            <span  th:if="${err != null}" th:text="${err}" class="closebtn" onclick="this.parentElement.style.display='none';"></span>
+        </div>
+
+        <input id="email" th:value="${mail}" type="hidden" />
+        <div class="title">OTP</div>
+        <div class="title">Verification Code</div>
+        <p th:text="${pesan}"></p>
+        <div id='inputs'>
+            <input id='input1' type='text' maxLength="1" />
+            <input id='input2' type='text' maxLength="1" />
+            <input id='input3' type='text' maxLength="1" />
+            <input id='input4' type='text' maxLength="1" />
+            <input id='input5' type='text' maxLength="1" />
+            <input id='input6' type='text' maxLength="1" />
+        </div>
+        <div>
+            <button id="ver" type="button">Submit</button>
+        </div>
+        <div>
+            <a th:href="@{'/auth/resend-otp-regis?email='+${mail}}">resend code</a>
+        </div>
+    </section>
+</div>
+
+
+<script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function(){
+        $('#ver').on('click',function (){
+            var input1 = $("#input1").val();
+            var input2 = $("#input2").val();
+            var input3 = $("#input3").val();
+            var input4 = $("#input4").val();
+            var input5 = $("#input5").val();
+            var input6 = $("#input6").val();
+            var mail = $("#email").val();
+            var otp = input1.concat(input2,input3,input4,input5,input6);
+
+            $.ajax({
+                url: "/auth/verify-regis?email="+mail+'&otp='+otp,
+                type: "GET"
+            }).done(function(response) {
+                console.log(response);
+                var result = response.match('<title>OTP Email</title>');
+                console.log(result);
+                if(result){
+                    $("#for-reload").html(response);
+                }else {
+                    window.location = "/auth/success";
+                }
+            });
+        });
+    });
+    /*]]>*/
+</script>
+
+</body>
+
+</html>

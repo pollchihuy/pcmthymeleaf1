@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<nav th:fragment="navheader">
+    <ul>
+        <li><a th:href="@{/auth/home}">Home</a></li>
+        <th:block th:if="${USR_NAME != null}" th:utext="${MENU_NAVBAR}"></th:block>
+        <li><a th:if="${USR_NAME != null}" th:href="@{/auth/logout}">Logout</a></li>
+    </ul>
+</nav>
+
+
+</html>
