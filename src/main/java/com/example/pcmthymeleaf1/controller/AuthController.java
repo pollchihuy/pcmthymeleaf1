@@ -72,42 +72,6 @@ public class AuthController {
         return ListPage.homePage;
     }
 
-//    @GetMapping("/coba")
-//    public String coba(
-//                        Model model,
-//                        WebRequest webRequest){
-//
-//        ResponseEntity<Object> response = authServices.coba();
-//
-//        if(response.getStatusCode().value() == 200){
-//            System.out.println(response.getBody());
-//            Map<String,Object> map = (Map<String, Object>) response.getBody();
-//
-//            List<Map<String,Object>> lt = (List<Map<String, Object>>) map.get("list");
-//            for(Map<String,Object> map2 : lt){
-//                System.out.println(map2.get("username"));
-//                System.out.println(map2.get("password"));
-//            }
-//            System.out.println("Info "+map.get("info"));
-////            for (Map.Entry<String, Object> entry : map.entrySet()) {
-////                System.out.println(entry.getKey() + ": " + entry.getValue());
-////                lt = (List<Map<String, Object>>) entry.getValue();
-////                for(Map<String,Object> l : lt){
-////                    System.out.println(l.get("username"));
-////                    System.out.println(l.get("password"));
-////                }
-////            }
-////            RespLoginDTO respLoginDTO = (RespLoginDTO) response.getBody();
-////            System.out.println(respLoginDTO.getMenu());
-////            System.out.println(respLoginDTO.getToken());
-////            System.out.println(response.getHeaders());
-//        }else {
-//            return "redirect:/";
-//        }
-//
-//        return "redirect:/";
-//    }
-
     @GetMapping("/regis")
     public String regis(Model model, WebRequest webRequest){
 
@@ -192,6 +156,15 @@ public class AuthController {
             Model model , WebRequest webRequest) {
         model.addAttribute("usr",new ValLoginDTO());
         model.addAttribute("reg","Registrasi Berhasil");
+        return ListPage.loginPage;
+    }
+
+    /** semisal error pada saat di main page , akan selalu di redirect ke url ini */
+    @GetMapping("/relogin")
+    public String relogin(
+            Model model , WebRequest webRequest) {
+        model.addAttribute("usr",new ValLoginDTO());
+        model.addAttribute("reg","Lakukan Login Kembali");
         return ListPage.loginPage;
     }
 

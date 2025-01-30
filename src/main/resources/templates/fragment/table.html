@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<table th:fragment="main-table" >
+<thead>
+<tr>
+    <th:block th:each="headerName : ${listKolom}">
+        <th th:text="${headerName}"></th>
+    </th:block>
+    <th colspan="2">Action</th>
+</tr>
+</thead>
+<tbody>
+<th:block th:each="entry:${listContent}">
+    <tr>
+        <th:block th:each="f:${listHelper}" >
+            <td th:text="${entry.get(f)}"></td>
+        </th:block>
+        <td style="text-align: center">
+            <button type="button"
+                    th:data-title="'Edit'"
+                    th:data-server="'#server-results-edit'"
+                    onclick="funcModalsHandler(event)"
+                    th:data-url="'/'+${pathServer}+'/e/'+${entry.get('id')}"
+                    class="btn btn-primary" data-toggle="modal" data-target="#edit1">
+                Edit
+            </button>
+        </td>
+        <td style="text-align: center">
+<!--            <a th:href="@{'/'+${pathServer}+'/d/'+${entry.get('id')}}"  class="btn btn-danger">Delete</a>-->
+        <button type="button" id="btnDelete"
+                onclick="getRequestHandler(event)"
+                th:data-title="${pathServer}"
+                th:data-url="'/'+${pathServer}+'/d/'+${entry.get('id')}"
+                class="btn btn-primary">
+            Delete
+        </button>
+        </td>
+</th:block>
+</tr>
+</th:block>
+
+</tbody>
+</table>
+
+
+</html>

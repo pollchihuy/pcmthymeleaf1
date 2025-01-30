@@ -40,6 +40,10 @@
                                     <p style="text-align: center;color: green;font-weight: bolder;font-size: 2.5rem" th:utext="${reg}" />
                                 </div>
 
+                                <div th:if="${authProblem != null}" class="error-box error-danger" >
+                                    <p style="text-align: center;color: green;font-weight: bolder;font-size: 2.5rem" th:utext="${authProblem}" />
+                                </div>
+
                                 <div th:if="${#fields.hasErrors('global')}" class="error-box error-danger" >
                                     <p th:each="err : ${#fields.errors('global')}" th:text="${err}"  />
                                 </div>
@@ -103,7 +107,7 @@
         });
     });
 </script>
-<div th:replace="fragment/footer::ftr"></div>
+<div th:replace="~{fragment/footer::ftr}"></div>
 
 </body>
 
