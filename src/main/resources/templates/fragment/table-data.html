@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<table th:fragment="data-table" >
+    <thead>
+    <tr>
+        <th:block th:each="headerName : ${listKolom}">
+            <th th:text="${headerName}"></th>
+        </th:block>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <th:block th:each="entry:${listContent}">
+        <tr>
+            <th:block th:each="f:${listHelper}" >
+                <td th:text="${entry.get(f)}"></td>
+            </th:block>
+            <td style="text-align: center">
+                <button type="button"
+                        th:data-idVal="${entry.get('id')}"
+                        th:data-idComp="${idComp}"
+                        th:data-descComp="${descComp}"
+                        th:data-descVal="${entry.get(2)}"
+                        onclick="funcModalsDataMasterHandler(event)"
+                        class="btn btn-primary" data-toggle="modal" data-target="#dataTable">
+                    Pilih
+                </button>
+            </td>
+    </th:block>
+    </tr>
+    </th:block>
+
+    </tbody>
+</table>
+
+
+</html>

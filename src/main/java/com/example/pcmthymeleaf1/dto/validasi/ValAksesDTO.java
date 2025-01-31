@@ -18,6 +18,8 @@ Version 1.0
 */
 public class ValAksesDTO {
 
+    private Long id;
+
     @NotNull(message = "Field Nama Tidak Boleh NULL")
     @NotEmpty(message = "Field Nama Tidak Boleh Kosong")
     @NotBlank(message = "Field Nama Tidak Boleh Blank")
@@ -26,6 +28,14 @@ public class ValAksesDTO {
 
     @NotNull(message = "Menu Wajib DIISI")
     private List<ValMenuDTO> ltMenu;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getNama() {
         return nama;

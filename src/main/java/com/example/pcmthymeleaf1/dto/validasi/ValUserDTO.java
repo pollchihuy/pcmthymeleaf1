@@ -17,6 +17,9 @@ import java.time.LocalDate;
 
 public class ValUserDTO {
 
+    private Long id;
+    private String nama;
+
     @NotNull
     @NotBlank
     @NotEmpty
@@ -27,7 +30,7 @@ public class ValUserDTO {
     @NotNull
     @NotBlank
     @NotEmpty
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[_#\\-$])[\\w].{8,15}$",
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[_#\\-$@])[\\w].{8,15}$",
             message = "Format minimal 1 angka, 1 huruf kecil, 1 huruf besar, 1 spesial karakter (_ \"Underscore\", - \"Hyphen\", # \"Hash\", atau $ \"Dollar\") setelah 4 kondisi min 9 max 16 alfanumerik, contoh : aB4$12345")
     private String password;
 
@@ -59,6 +62,22 @@ public class ValUserDTO {
 
     @NotNull
     private RespAksesDTO akses;
+
+    public String getNama() {
+        return nama;
+    }
+
+    public void setNama(String nama) {
+        this.nama = nama;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public LocalDate getTanggalLahir() {
         return tanggalLahir;

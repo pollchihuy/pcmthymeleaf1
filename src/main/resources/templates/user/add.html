@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<form  th:action="@{/user/a}"
+	   th:object = "${data}" method="POST" id="addUser">
+	<input type="hidden" value="6155ffa01fed495dbf865dd11a5af11a" /><!-- id form -->
+	<div th:if="${#fields.hasErrors('global')}" class="error-box error-danger" >
+		<p th:each="err : ${#fields.errors('global')}" th:text="${err}"  class="error"/>
+	</div>
+	<div class ="form-group">
+		<label> Nama </label>
+		<input
+				type = "text"
+				name = "nama"
+				th:field = "*{nama}"
+				class = "form-control"
+				placeholder="Masukkan Nama"
+		/>
+		<ul>
+			<li th:each="err : ${#fields.errors('nama')}" th:text="${err}" class="error" />
+		</ul>
+	</div>
+	<div class ="form-group">
+		<label> Username </label>
+		<input
+				type = "text"
+				name = "username"
+				th:field = "*{username}"
+				class = "form-control"
+				placeholder="Masukkan Username"
+		/>
+		<ul>
+			<li th:each="err : ${#fields.errors('username')}" th:text="${err}" class="error" />
+		</ul>
+	</div>
+
+	<div class ="form-group">
+		<label> Password </label>
+		<input
+				type = "password"
+				name = "password"
+				th:field = "*{password}"
+				class = "form-control"
+				placeholder="Masukkan Password"
+		/>
+		<ul>
+			<li th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error" />
+		</ul>
+	</div>
+
+	<div class ="form-group">
+		<label> Email </label>
+		<input
+				type = "email"
+				name = "email"
+				th:field = "*{email}"
+				class = "form-control"
+				placeholder="Masukkan Email"
+		/>
+		<ul>
+			<li th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error" />
+		</ul>
+	</div>
+
+	<div class ="form-group">
+		<label> Alamat </label>
+		<textarea
+				name = "alamat"
+				th:field = "*{alamat}"
+				class = "form-control"
+				placeholder="Masukkan Alamat"
+		/>
+		<ul>
+			<li th:each="err : ${#fields.errors('alamat')}" th:text="${err}" class="error" />
+		</ul>
+	</div>
+
+	<div class ="form-group">
+		<label> No Handphone </label>
+		<input
+				type="number"
+				name = "noHp"
+				th:field = "*{noHp}"
+				class = "form-control"
+				placeholder="Masukkan Nomor Handphone"
+		/>
+		<ul>
+			<li th:each="err : ${#fields.errors('noHp')}" th:text="${err}" class="error" />
+		</ul>
+	</div>
+
+	<div class ="form-group">
+		<label> Akses </label>
+		<input
+				id="namaAkses"
+				type="text"
+				name = "namaAkses"
+				th:field = "*{akses.nama}"
+				class = "form-control"
+				disabled="disabled"
+		/>
+		<input type="hidden" th:field="*{akses.id}" id="idAkses" />
+		<button
+				th:id="pilih-data"
+				th:onclick="funcModalsDataTableHandler('Data Akses','#dataTable','/akses/idAkses/namaAkses','#data-result')"
+				data-toggle="modal" data-target="#dataTable"
+				class="btn btn-primary" type="button">
+			Pilih
+		</button>
+	</div>
+
+	<div class ="form-group">
+		<label> Tanggal Lahir </label>
+		<input
+				type="date"
+				name = "tanggalLahir"
+				th:field = "*{tanggalLahir}"
+				class = "form-control"
+		/>
+		<ul>
+			<li th:each="err : ${#fields.errors('tanggalLahir')}" th:text="${err}" class="error" />
+		</ul>
+	</div>
+
+	<div class = "modal-footer">
+		<button type="submit" class = "btn btn-primary">
+			Submit
+		</button>
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	</div>
+</form>
+
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+    $("#addUser").submit(function(event) {
+          event.preventDefault(); //prevent default action
+          let post_url = $(this).attr("action"); //get form action url
+          let request_method = $(this).attr("method"); //get form GET/POST method
+          let form_data = $(this).serialize(); //Encode form elements for submission
+          $.ajax({
+              url: post_url,
+              type: request_method,
+              data: form_data
+            }).done(function(response) { //
+            let pattern = /6155ffa01fed495dbf865dd11a5af11a/i;
+			let result = response.match(pattern);
+            if(result)
+            {
+				$("#server-results-add").html(response);
+            }
+            else
+            {
+				$('#add1').modal('hide');
+				confirm("DATA BERHASIL DISIMPAN");
+				window.location = "/user";// ini refresh page nya
+            }
+            });
+        });
+
+/*]]>*/
+</script>
+</html>

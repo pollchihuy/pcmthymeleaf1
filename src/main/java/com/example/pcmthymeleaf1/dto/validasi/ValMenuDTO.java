@@ -9,6 +9,8 @@ import jakarta.validation.constraints.Pattern;
 
 public class ValMenuDTO {
 
+    private Long id;
+
     @NotNull(message = "Field Nama Tidak Boleh NULL")
     @NotEmpty(message = "Field Nama Tidak Boleh Kosong")
     @NotBlank(message = "Field Nama Tidak Boleh Blank")
@@ -22,6 +24,14 @@ public class ValMenuDTO {
     private String path;
 
     private RespGroupMenuDTO groupMenu;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getNama() {
         return nama;

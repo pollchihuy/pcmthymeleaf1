@@ -9,6 +9,24 @@ public class RespUserDTO {
     private String alamat;
     private String noHp;
     private RespAksesDTO akses;
+    private String tanggalLahir;
+    private String nama;
+
+    public String getNama() {
+        return nama;
+    }
+
+    public void setNama(String nama) {
+        this.nama = nama;
+    }
+
+    public String getTanggalLahir() {
+        return tanggalLahir;
+    }
+
+    public void setTanggalLahir(String tanggalLahir) {
+        this.tanggalLahir = tanggalLahir;
+    }
 
     public Long getId() {
         return id;

@@ -15,6 +15,11 @@ public class ListPage {
     public final static String groupMenuAddPage = "groupmenu/add";
     public final static String menuEditPage = "menu/edit";
     public final static String menuAddPage = "menu/add";
+    public final static String aksesEditPage = "akses/edit";
+    public final static String aksesAddPage = "akses/add";
+    public final static String userAddPage = "user/add";
+    public final static String userEditPage = "user/edit";
+    public final static String dataTableModals = "global/data-table-form";
 
 
 }

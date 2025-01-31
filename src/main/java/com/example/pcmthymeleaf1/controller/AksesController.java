@@ -1,44 +1,177 @@
 package com.example.pcmthymeleaf1.controller;
 
 
+import com.example.pcmthymeleaf1.dto.response.RespAksesDTO;
+import com.example.pcmthymeleaf1.dto.validasi.ValAksesDTO;
 import com.example.pcmthymeleaf1.dto.validasi.ValLoginDTO;
 import com.example.pcmthymeleaf1.httpclient.AksesService;
 import com.example.pcmthymeleaf1.util.GlobalFunction;
 import com.example.pcmthymeleaf1.util.ListPage;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("akses")
 public class AksesController {
 
-
     @Autowired
     private AksesService aksesService;
 
-    @GetMapping()
-    public String findAll(Model model){
 
+    @GetMapping
+    public String findAll(Model model, WebRequest webRequest){
         ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        if(jwt.equals(ListPage.loginPage)){
+            return jwt;
+        }
+
         try{
-            response = aksesService.findAll("Bearer ea2fcd8935893efdb6437483a852fd62d6905ae0e40a314368b802be1c80658f65284fdaa45ecebee35c35d9098aa7a6a60b344a27be785a99514e706f0d82748a97ea1a854ea373953fbb9784c7f02bca26a8c9464eb69eb8883cec0d8509786dd4fd6d31ebd6f98bd153ba574269b5270243722c6853816f99624dc305b756f338b391c56d96f996f646f69ba04648d2e491495c3f0860ec9d6fadce28599824d74c06978ae78fedf7d04cc742a766e3d45b91a10b4b507fd1fea092ef0beddbdeb170b90cb1c85323fc9f6bbd1a13c417963c5617fa4140bc46d215fd9d16911c8aab7375916d5ac7f416b45357b200cd21ae185fc08356020a2dd67c65c7d95c431a9cb63189a2ad650df5399519");
+            response = aksesService.findAll("Bearer "+jwt);
         }catch (Exception e){
-            System.out.println(e.getCause().getMessage());
             model.addAttribute("usr", new ValLoginDTO());
             return ListPage.loginPage;
         }
 
         Map<String,Object> map = (Map<String, Object>) response.getBody();
         GlobalFunction.setDataTable(model,map,"akses");
-        return "akses/main";
+        GlobalFunction.setGlobalFragment(model,webRequest);
+        return ListPage.aksesMainPage;
     }
 
+    @GetMapping("/{idComp}/{descComp}")
+    public String dataTable(Model model,
+                            @PathVariable(value = "idComp") String idComp,
+                            @PathVariable(value = "descComp") String descComp,
+                WebRequest webRequest){
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        if(jwt.equals(ListPage.loginPage)){
+            return jwt;
+        }
+
+        try{
+            response = aksesService.findAll("Bearer "+jwt);
+        }catch (Exception e){
+            model.addAttribute("usr", new ValLoginDTO());
+            return ListPage.loginPage;
+        }
+
+        Map<String,Object> map = (Map<String, Object>) response.getBody();
+        GlobalFunction.setDataTable(model,map,"akses");
+        model.addAttribute("idComp", idComp);
+        model.addAttribute("descComp",descComp);
+        return ListPage.dataTableModals;
+    }
+
+    @GetMapping("/e/{id}")
+    public String openModalsEdit(Model model, @PathVariable(value = "id") Long id, WebRequest webRequest){
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        if(jwt.equals(ListPage.loginPage)){
+            return jwt;
+        }
+        try{
+            response = aksesService.findById("Bearer "+jwt,id);
+        }catch (Exception e){
+            model.addAttribute("pesan", e.getCause().getMessage());
+            return ListPage.aksesMainPage;
+        }
+        Map<String,Object> map = (Map<String, Object>) response.getBody();
+        Map<String,Object> mapData = (Map<String, Object>) map.get("data");
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        RespAksesDTO respGroupMenuDTO = objectMapper.convertValue(mapData, RespAksesDTO.class);
+        model.addAttribute("data",new ObjectMapper().convertValue(mapData,RespAksesDTO.class));
+        return ListPage.aksesEditPage;
+    }
+
+    @GetMapping("/a")
+    public String openModalAdd(Model model, WebRequest webRequest){
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        if(jwt.equals(ListPage.loginPage)){
+            return jwt;
+        }
+        model.addAttribute("data",new RespAksesDTO());
+        return ListPage.aksesAddPage;
+    }
+
+    @PostMapping("/a")
+    public String save(
+            @ModelAttribute("data") @Valid ValAksesDTO valAksesDTO,
+            BindingResult result,
+            Model model, WebRequest webRequest){
+        if(result.hasErrors()){
+            model.addAttribute("data",valAksesDTO);
+            return ListPage.aksesAddPage;
+        }
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        if(jwt.equals(ListPage.loginPage)){
+            return jwt;
+        }
+
+        try{
+            response = aksesService.save("Bearer "+jwt,valAksesDTO);
+        }catch (Exception e){
+            model.addAttribute("usr",new ValLoginDTO());
+            return ListPage.loginPage;
+        }
+        model.addAttribute("pesan","Data Berhasil Diubah");
+        return ListPage.aksesMainPage;
+    }
+
+    @PostMapping("/e/{id}")
+    public String edit(
+            @ModelAttribute("data") @Valid ValAksesDTO valAksesDTO,
+            BindingResult result,
+            Model model,
+            @PathVariable(value = "id") Long id,
+            WebRequest webRequest){
+        valAksesDTO.setId(id);
+
+        if(result.hasErrors()){
+            model.addAttribute("data",valAksesDTO);
+            return ListPage.aksesEditPage;
+        }
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        if(jwt.equals(ListPage.loginPage)){
+            return jwt;
+        }
+        try{
+            response = aksesService.update("Bearer "+jwt,id,valAksesDTO);
+        }catch (Exception e){
+            model.addAttribute("usr",new ValLoginDTO());
+            return ListPage.loginPage;
+        }
+        model.addAttribute("pesan","Data Berhasil Diubah");
+        return ListPage.aksesMainPage;
+    }
+
+    @GetMapping("/d/{id}")
+    public String delete(Model model, @PathVariable(value = "id") Long id, WebRequest webRequest){
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        if(jwt.equals(ListPage.loginPage)){
+            return jwt;
+        }
+        try {
+            response = aksesService.delete("Bearer "+jwt,id);
+        }catch (Exception e){
+            model.addAttribute("usr",new ValLoginDTO());
+            return ListPage.loginPage;
+        }
+        model.addAttribute("pesan","Data Berhasil Dihapus");
+        return ListPage.aksesMainPage;
+    }
 }

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
@@ -70,7 +71,6 @@ public class MenuController {
 
     @GetMapping("/a")
     public String openModalAdd(Model model, WebRequest webRequest){
-        ResponseEntity<Object> response = null;
         String jwt = GlobalFunction.tokenCheck(model,webRequest);
         if(jwt.equals(ListPage.loginPage)){
             return jwt;
@@ -97,8 +97,9 @@ public class MenuController {
         try{
             response = menuService.save("Bearer "+jwt,valMenuDTO);
         }catch (Exception e){
-            model.addAttribute("usr",new ValLoginDTO());
-            return ListPage.loginPage;
+            model.addAttribute("data",new RespMenuDTO());
+            result.addError(new ObjectError("globalError",e.getCause().getMessage()));
+            return ListPage.menuAddPage;
         }
         model.addAttribute("pesan","Data Berhasil Diubah");
         return ListPage.menuMainPage;
@@ -111,8 +112,15 @@ public class MenuController {
             Model model,
             @PathVariable(value = "id") Long id,
             WebRequest webRequest){
-
+        valMenuDTO.setId(id);//ketika gagal submit id nya harus diset , karena tidak ada di dalam body request
+        /** ketentuan untuk relasi, kalau semisal object nya tidak null, akan tetapi id nya null maka akan menyebabkan internal server error
+         *  jadi kita butuh validasi khusus untuk relasinya , semisal nilainya tidak di set di sisi web maka kita null kan object nya -- aturan JPA
+         */
+        if(valMenuDTO.getGroupMenu().getId()==null){
+            valMenuDTO.setGroupMenu(null);
+        }
         if(result.hasErrors()){
+
             model.addAttribute("data",valMenuDTO);
             return ListPage.menuEditPage;
         }
@@ -124,8 +132,10 @@ public class MenuController {
         try{
             response = menuService.update("Bearer "+jwt,id,valMenuDTO);
         }catch (Exception e){
-            model.addAttribute("usr",new ValLoginDTO());
-            return ListPage.loginPage;
+            System.out.println(e.getMessage());
+            model.addAttribute("data",valMenuDTO);
+            result.addError(new ObjectError("globalError",e.getCause().getMessage()));
+            return ListPage.menuEditPage;
         }
         model.addAttribute("pesan","Data Berhasil Diubah");
         return ListPage.menuMainPage;

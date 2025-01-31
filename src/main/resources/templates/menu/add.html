@@ -1,19 +1,19 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<form  th:action="@{/menu/e/{id} (id=${data.id})}"
-	   th:object = "${data}" method="POST" id="editMenu"><!--	ID FORM TIDAK BOLEH SAMA DENGAN ID MODALS DI FRAGMENT -->
-	<input type="hidden" value="e9df4204c7d749e0a6b240a54669380d" /><!-- id form -->
+<form  th:action="@{/menu/a}"
+	   th:object = "${data}" method="POST" id="addMenu">
+	<input type="hidden" value="6155ffa01fed495dbf865dd11a5af11a" /><!-- id form -->
 	<div th:if="${#fields.hasErrors('global')}" class="error-box error-danger" >
 		<p th:each="err : ${#fields.errors('global')}" th:text="${err}"  class="error"/>
 	</div>
 	<div class ="form-group">
-		<label> Nama Menu </label>
+		<label> Nama Group </label>
 		<input
 				type = "text"
-				name = "namaMenu"
+				name = "namaMenuHeader"
 				th:field = "*{nama}"
 				class = "form-control"
-				placeholder="Masukkan Nama Menu"
+				placeholder="Masukkan Nama Group"
 		/>
 		<ul>
 			<li th:each="err : ${#fields.errors('nama')}" th:text="${err}" class="error" />
@@ -46,7 +46,7 @@
 		<input type="hidden" th:field="*{groupMenu.id}" id="idGroup" />
 		<button
 				th:id="pilih-data"
-				th:onclick="funcModalsDataTableHandler('Data Group Menu','#dataTable','/group-menu/idGroup/namaGroup','#data-result')"
+				th:onclick="funcModalsDataTableHandler('DataGroupMenu','#dataTable','/group-menu/idGroup/namaGroup','#data-result')"
 				data-toggle="modal" data-target="#dataTable"
 				class="btn btn-primary" type="button">
 			Pilih
@@ -62,13 +62,12 @@
 		</button>
 		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 	</div>
-
 </form>
 
 
 <script th:inline="javascript">
 /*<![CDATA[*/
-    $("#editMenu").submit(function(event) {
+    $("#addMenu").submit(function(event) {
           event.preventDefault(); //prevent default action
           let post_url = $(this).attr("action"); //get form action url
           let request_method = $(this).attr("method"); //get form GET/POST method
@@ -78,7 +77,7 @@
               type: request_method,
               data: form_data
             }).done(function(response) { //
-            let pattern = /e9df4204c7d749e0a6b240a54669380d/i;
+            let pattern = /6155ffa01fed495dbf865dd11a5af11a/i;
 			let result = response.match(pattern);
             if(result)
             {
@@ -87,7 +86,7 @@
             else
             {
 				$('#edit1').modal('hide');
-				confirm("DATA BERHASIL DIUBAH");
+				confirm("DATA BERHASIL DISIMPAN");
 				window.location = "/menu";// ini refresh page nya
             }
             });
