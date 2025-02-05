@@ -1,6 +1,7 @@
 function funcModalsHandler(event)
 {
 	event.preventDefault(); //prevent default action
+	// event.stopImmediatePropagation();
 	var button = event.target
 	var dataTitle = button.dataset.title
 	var dataTarget = button.dataset.target
@@ -29,30 +30,6 @@ function funcModalsHandler(event)
 
 }
 
-// function funcModalsDataTableHandler(event)
-// {
-// 	var button = event.target
-// 	var dataTitle = button.dataset.title
-// 	var dataTarget = button.dataset.target
-// 	var urlz = button.dataset.url
-// 	var serverz = button.dataset.server
-// 	$(dataTarget).on('show.bs.modal',function(){
-//
-// 		$.get(urlz, function (data) {
-// 			try{
-// 				$(serverz).html(data);
-// 				$('#pilih-data').prop('disabled', true);
-// 			}catch(r)
-// 			{
-// 				console.log('error '+r)
-// 				$('#pilih-data').prop('disabled', false);
-// 			}finally
-// 			{
-// 				$(dataTarget).find('#data').text(dataTitle)
-// 			}
-// 		});
-// 	})
-// }
 
 function funcModalsDataTableHandler(dataTitle,dataTarget,urlz,serverz)
 {

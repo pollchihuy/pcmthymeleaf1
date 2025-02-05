@@ -1,4 +1,4 @@
-package com.example.pcmthymeleaf1.dto.validasi;
+package com.example.pcmthymeleaf1.dto.response;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -7,27 +7,14 @@ import jakarta.validation.constraints.Pattern;
 
 import java.util.List;
 
-/*
-IntelliJ IDEA 2024.1.4 (Ultimate Edition)
-Build #IU-241.18034.62, built on June 21, 2024
-@Author pollc a.k.a. Paul Christian
-Java Developer
-Created on Wed 21:14
-@Last Modified Wed 21:14
-Version 1.0
-*/
-public class ValAksesDTO {
-
+public class SelectAksesDTO {
     private Long id;
-
     @NotNull(message = "Field Nama Tidak Boleh NULL")
     @NotEmpty(message = "Field Nama Tidak Boleh Kosong")
     @NotBlank(message = "Field Nama Tidak Boleh Blank")
-    @Pattern(regexp = "^[\\w\\s]{3,40}$",message = "AflaNumerik Dengan Spasi Min 3 Max 40")
+    @Pattern(regexp = "^[a-zA-Z\\s]{2,40}$",message = "AflaNumerik Dengan Spasi Min 2 Max 40")
     private String nama;
-
-//    @NotNull(message = "Menu Wajib DIISI")
-    private List<ValMenuDTO> ltMenu;
+    private List<String> ltMenu;
 
     public Long getId() {
         return id;
@@ -45,11 +32,11 @@ public class ValAksesDTO {
         this.nama = nama;
     }
 
-    public @NotNull(message = "Menu Wajib DIISI") List<ValMenuDTO> getLtMenu() {
+    public List<String> getLtMenu() {
         return ltMenu;
     }
 
-    public void setLtMenu(@NotNull(message = "Menu Wajib DIISI") List<ValMenuDTO> ltMenu) {
+    public void setLtMenu(List<String> ltMenu) {
         this.ltMenu = ltMenu;
     }
 }

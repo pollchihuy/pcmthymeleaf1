@@ -1,34 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
 
-<table>
-    <thead>
-    <tr>
-        <th:block th:each="headerName : ${listKolom}">
-            <th th:text="${headerName}"></th>
-        </th:block>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <th:block th:each="entry:${listContent}">
-        <tr>
-            <th:block th:each="f:${listHelper}" >
-                <td th:text="${entry.get(f)}"></td>
-            </th:block>
-            <td style="text-align: center">
-                <button type="button"
-                        th:onclick="funcModalsDataMasterHandler('#'+[[${idComp}]],'#'+[[${descComp}]],[[${entry.get('id')}]],[[${entry.get('nama')}]])"
-                        class="btn btn-primary">
-                    Pilih
-                </button>
-            </td>
-    </th:block>
-    </tr>
-    </th:block>
+<div th:replace="~{fragment/filter-data::filter-data-master}"></div>
+<div th:replace="~{fragment/table-data::table-master}"></div>
+<div th:replace="~{fragment/pagination-data::paging-data}"></div>
+<div th:if="${pesan != null}" class="error-box error-danger" >
+    <p style="text-align: center;color: green;font-weight: bolder;font-size: 2.5rem" th:utext="${pesan}" />
+</div>
 
-    </tbody>
-</table>
 <script th:inline="javascript">
     /*<![CDATA[*/
     // function funcModalsDataMasterHandler(event)
@@ -40,7 +19,12 @@
         $('#dataTable').modal('hide');
     }
 
+    $('#sizeChange').on("change", function (){
+        callDataMaster();
+    });
+
+
     /*]]>*/
 </script>
 
-</html>
+<!--</html>-->

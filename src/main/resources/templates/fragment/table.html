@@ -3,8 +3,12 @@
 <table th:fragment="main-table" >
 <thead>
 <tr>
-    <th:block th:each="headerName : ${listKolom}">
-        <th th:text="${headerName}"></th>
+    <th:block th:each="map:${listKolom}">
+            <th>
+            <a class="text-light" th:href="@{'/'+${pathServer}+'/'+(${#strings.equals(sort,'asc')} ? 'desc' : 'asc')+'/'+${map.key}+'/'+${currentPage}+'?column='+${columnName}+'&value='+${value}+'&size='+${sizePerPage}}">
+                [[${map.value}]]
+            </a>
+        </th>
     </th:block>
     <th colspan="2">Action</th>
 </tr>
@@ -26,7 +30,6 @@
             </button>
         </td>
         <td style="text-align: center">
-<!--            <a th:href="@{'/'+${pathServer}+'/d/'+${entry.get('id')}}"  class="btn btn-danger">Delete</a>-->
         <button type="button" id="btnDelete"
                 onclick="getRequestHandler(event)"
                 th:data-title="${pathServer}"

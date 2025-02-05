@@ -18,6 +18,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -26,6 +27,14 @@ public class MenuController {
 
     @Autowired
     private MenuService menuService;
+
+    private Map<String,Object> filterColumn=new HashMap<>();
+
+    public MenuController() {
+        filterColumn.put("nama","Nama Menu");
+        filterColumn.put("path","Path Menu");
+        filterColumn.put("group","Group");
+    }
 
     @GetMapping
     public String findAll(Model model, WebRequest webRequest){
@@ -45,6 +54,35 @@ public class MenuController {
         Map<String,Object> map = (Map<String, Object>) response.getBody();
         GlobalFunction.setDataTable(model,map,"menu");
         GlobalFunction.setGlobalFragment(model,webRequest);
+        model.addAttribute("filterColumn",filterColumn);
+        return ListPage.menuMainPage;
+    }
+
+    @GetMapping("/{sort}/{sortBy}/{page}")
+    public String findAll(
+            @PathVariable(value = "sort") String sort,
+            @PathVariable(value = "sortBy") String sortBy,//name
+            @PathVariable(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value,
+            Model model, WebRequest webRequest){
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        if(jwt.equals(ListPage.loginPage)){
+            return jwt;
+        }
+
+        try{
+            page = page!=0?(page-1):page;
+            response = menuService.findByParam("Bearer "+jwt,sort,sortBy,page,size,column,value);
+        }catch (Exception e){
+            GlobalFunction.statusNotFound(model,"menu",webRequest,filterColumn,e.getCause().getMessage());
+            return ListPage.menuMainPage;
+        }
+
+        Map<String,Object> map = (Map<String, Object>) response.getBody();
+        GlobalFunction.statusOK(model,"menu",webRequest,map,filterColumn);
         return ListPage.menuMainPage;
     }
 

@@ -2,12 +2,36 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+<!--    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css} "/>-->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css} "/>
     <link th:href="@{/css/table.css}" rel="stylesheet">
+    <link th:href="@{/css/error.css}" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <script type="text/javascript"  th:src="@{/js/modals.js}"></script>
     <title>Akses</title>
 </head>
 <body>
+    <div th:replace="~{fragment/navbar::navheader}"></div>
+    <div th:replace="~{fragment/table::main-table}"></div>
+    <div th:if="${pesan != null}" class="error-box error-danger" >
+        <p style="text-align: center;color: green;font-weight: bolder;font-size: 2.5rem" th:utext="${pesan}" />
+    </div>
+    <div>
+        <button type="button"
+                th:data-title="'ADD'"
+                th:data-server="'#server-results-add'"
+                onclick="funcModalsHandler(event)"
+                th:data-url="'/'+${pathServer}+'/a'"
+                class="btn btn-primary" data-toggle="modal" data-target="#add1">
+            ADD
+        </button>
+    </div>
 
-<div th:replace="fragment/table::main-table"></div>
+<th:block th:replace="~{fragment/modals-add::modalsAdd('add1')}">modalAdd</th:block>
+<th:block th:replace="~{fragment/modals-edit::modalzEdit('edit1')}">modalEdit</th:block>
 
+<script type="text/javascript" th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 </body>
 </html>

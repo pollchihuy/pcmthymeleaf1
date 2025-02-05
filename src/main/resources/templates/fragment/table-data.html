@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<table th:fragment="data-table" >
+<table th:fragment="table-master">
     <thead>
     <tr>
-        <th:block th:each="headerName : ${listKolom}">
-            <th th:text="${headerName}"></th>
+        <th:block th:each="map:${listKolom}">
+            <th>
+<!--                <a class="text-light" th:href="@{'/'+${pathServer}+'/'+${idComp}+'/'+${descComp}+'/'+(${#strings.equals(sort,'asc')} ? 'desc' : 'asc')+'/'+${map.key}+'/'+${currentPage}+'?column='+${columnName}+'&value='+${value}+'&size='+${sizePerPage}}">-->
+<!--                    [[${map.value}]]-->
+<!--                </a>-->
+                <button style="background-color: #003366;color: white;padding: 5px;font-size: 18px;text-align: center" type="button" th:onclick="callDataMasterSorting([[(${#strings.equals(sort,'asc')} ? 'desc' : 'asc')]],[[${map.key}]])">[[${map.value}]]</button>
+
+            </th>
         </th:block>
         <th>Action</th>
     </tr>
+
     </thead>
     <tbody>
     <th:block th:each="entry:${listContent}">
@@ -18,12 +25,8 @@
             </th:block>
             <td style="text-align: center">
                 <button type="button"
-                        th:data-idVal="${entry.get('id')}"
-                        th:data-idComp="${idComp}"
-                        th:data-descComp="${descComp}"
-                        th:data-descVal="${entry.get(2)}"
-                        onclick="funcModalsDataMasterHandler(event)"
-                        class="btn btn-primary" data-toggle="modal" data-target="#dataTable">
+                        th:onclick="funcModalsDataMasterHandler('#'+[[${idComp}]],'#'+[[${descComp}]],[[${entry.get('id')}]],[[${entry.get('nama')}]])"
+                        class="btn btn-primary">
                     Pilih
                 </button>
             </td>

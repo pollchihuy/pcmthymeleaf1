@@ -10,10 +10,7 @@
 </head>
 <body>
     <div th:replace="~{fragment/navbar::navheader}"></div>
-    <div th:replace="~{fragment/table::main-table}"></div>
-    <div th:if="${pesan != null}" class="error-box error-danger" >
-        <p style="text-align: center;color: green;font-weight: bolder;font-size: 2.5rem" th:utext="${pesan}" />
-    </div>
+    <div th:replace="~{fragment/filter::filter-form}"></div>
     <div>
         <button type="button"
                 th:data-title="'ADD'"
@@ -24,6 +21,12 @@
             ADD
         </button>
     </div>
+    <div th:replace="~{fragment/table::main-table}"></div>
+    <div th:if="${pesan != null}" class="error-box error-danger" >
+        <p style="text-align: center;color: green;font-weight: bolder;font-size: 2.5rem" th:utext="${pesan}" />
+    </div>
+
+    <div th:replace="~{fragment/pagination::paging}"></div>
 <th:block th:replace="~{fragment/modals-add::modalsAdd('add1')}">modalAdd</th:block>
 <th:block th:replace="~{fragment/modals-edit::modalzEdit('edit1')}">modalEdit</th:block>
 <th:block th:replace="~{fragment/modals-data-table::modalsTable('dataTable')}">modalsData</th:block>

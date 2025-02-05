@@ -18,6 +18,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -26,6 +27,18 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    private Map<String,Object> filterColumn=new HashMap<>();
+
+    public UserController() {
+        filterColumn.put("nama","Nama Lengkap");
+        filterColumn.put("username","Username");
+        filterColumn.put("password","Password");
+        filterColumn.put("email","Email");
+        filterColumn.put("alamat","Alamat");
+        filterColumn.put("noHp","Handphone");
+        filterColumn.put("umur","Usia");
+    }
 
     @GetMapping
     public String findAll(Model model, WebRequest webRequest){
@@ -45,6 +58,34 @@ public class UserController {
         Map<String,Object> map = (Map<String, Object>) response.getBody();
         GlobalFunction.setDataTable(model,map,"user");
         GlobalFunction.setGlobalFragment(model,webRequest);
+        model.addAttribute("filterColumn",filterColumn);
+        return ListPage.userMainPage;
+    }
+    @GetMapping("/{sort}/{sortBy}/{page}")
+    public String findByParam(
+            @PathVariable(value = "sort") String sort,
+            @PathVariable(value = "sortBy") String sortBy,//name
+            @PathVariable(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value,
+            Model model, WebRequest webRequest){
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        if(jwt.equals(ListPage.loginPage)){
+            return jwt;
+        }
+
+        try{
+            page = page!=0?(page-1):page;
+            response = userService.findByParam("Bearer "+jwt,sort,sortBy,page,size,column,value);
+        }catch (Exception e){
+            GlobalFunction.statusNotFound(model,"user",webRequest,filterColumn,e.getCause().getMessage());
+            return ListPage.userMainPage;
+        }
+
+        Map<String,Object> map = (Map<String, Object>) response.getBody();
+        GlobalFunction.statusOK(model,"user",webRequest,map,filterColumn);
         return ListPage.userMainPage;
     }
 

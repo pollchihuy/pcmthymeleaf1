@@ -11,6 +11,16 @@ public interface UserService {
     @GetMapping("")
     public ResponseEntity<Object> findAll(@RequestHeader("Authorization") String token);
 
+    @GetMapping("/{sort}/{sortBy}/{page}")
+    public ResponseEntity<Object> findByParam(
+            @RequestHeader("Authorization") String token,
+            @PathVariable(value = "sort") String sort,
+            @PathVariable(value = "sortBy") String sortBy,//name
+            @PathVariable(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value);
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@RequestHeader("Authorization") String token, @PathVariable(value = "id") Long id);
 

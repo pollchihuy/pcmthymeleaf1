@@ -46,7 +46,7 @@
 		<input type="hidden" th:field="*{groupMenu.id}" id="idGroup" />
 		<button
 				th:id="pilih-data"
-				th:onclick="funcModalsDataTableHandler('Data Group Menu','#dataTable','/group-menu/idGroup/namaGroup','#data-result')"
+				th:onclick="funcModalsDataTableHandler('Data Group Menu','#dataTable','/group-menu/idGroup/namaGroup/asc/id/0?column=id&value=&size=5','#data-result')"
 				data-toggle="modal" data-target="#dataTable"
 				class="btn btn-primary" type="button">
 			Pilih

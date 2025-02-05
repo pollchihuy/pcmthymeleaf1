@@ -17,8 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("group-menu")
@@ -26,7 +25,11 @@ public class GroupMenuController {
 
     @Autowired
     private GroupMenuService groupMenuService;
+    private Map<String,Object> filterColumn=new HashMap<>();
 
+    public GroupMenuController() {
+        filterColumn.put("nama","Nama Group");
+    }
 
     @GetMapping
     public String findAll(Model model, WebRequest webRequest){
@@ -46,14 +49,51 @@ public class GroupMenuController {
         Map<String,Object> map = (Map<String, Object>) response.getBody();
         GlobalFunction.setDataTable(model,map,"group-menu");
         GlobalFunction.setGlobalFragment(model,webRequest);
+        model.addAttribute("filterColumn",filterColumn);
         return ListPage.groupMenuMainPage;
     }
 
-    @GetMapping("/{idComp}/{descComp}")
+    @GetMapping("/{idComp}/{descComp}/{sort}/{sortBy}/{page}")
     public String dataTable(Model model,
+                            @PathVariable(value = "sort") String sort,
+                            @PathVariable(value = "sortBy") String sortBy,//name
+                            @PathVariable(value = "page") Integer page,
+                            @RequestParam(value = "size") Integer size,
+                            @RequestParam(value = "column") String column,
+                            @RequestParam(value = "value") String value,
                             @PathVariable(value = "idComp") String idComp,
                             @PathVariable(value = "descComp") String descComp,
                 WebRequest webRequest){
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        page = page!=0?(page-1):page;
+        if(jwt.equals(ListPage.loginPage)){
+            return jwt;
+        }
+
+        try{
+            response = groupMenuService.findByParam("Bearer "+jwt,sort,sortBy,page,size,column,value);
+        }catch (Exception e){
+            GlobalFunction.statusNotFoundDataMaster(model,"group-menu",webRequest,filterColumn,e.getCause().getMessage());
+            return ListPage.dataTableModals;
+        }
+
+        Map<String,Object> map = (Map<String, Object>) response.getBody();
+        GlobalFunction.statusOKDataMaster(model,"group-menu",webRequest,map,filterColumn);
+        model.addAttribute("idComp", idComp);
+        model.addAttribute("descComp",descComp);
+        return ListPage.dataTableModals;
+    }
+
+    @GetMapping("/{sort}/{sortBy}/{page}")
+    public String findByParam(
+            @PathVariable(value = "sort") String sort,
+            @PathVariable(value = "sortBy") String sortBy,//name
+            @PathVariable(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value,
+            Model model, WebRequest webRequest){
         ResponseEntity<Object> response = null;
         String jwt = GlobalFunction.tokenCheck(model,webRequest);
         if(jwt.equals(ListPage.loginPage)){
@@ -61,17 +101,16 @@ public class GroupMenuController {
         }
 
         try{
-            response = groupMenuService.findAll("Bearer "+jwt);
+            page = page!=0?(page-1):page;
+            response = groupMenuService.findByParam("Bearer "+jwt,sort,sortBy,page,size,column,value);
         }catch (Exception e){
-            model.addAttribute("usr", new ValLoginDTO());
-            return ListPage.loginPage;
+            GlobalFunction.statusNotFound(model,"group-menu",webRequest,filterColumn,e.getCause().getMessage());
+            return ListPage.menuMainPage;
         }
 
         Map<String,Object> map = (Map<String, Object>) response.getBody();
-        GlobalFunction.setDataTable(model,map,"group-menu");
-        model.addAttribute("idComp", idComp);
-        model.addAttribute("descComp",descComp);
-        return ListPage.dataTableModals;
+        GlobalFunction.statusOK(model,"group-menu",webRequest,map,filterColumn);
+        return ListPage.menuMainPage;
     }
 
     @GetMapping("/e/{id}")

@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<form  th:action="@{/akses/a}"
+	   th:object = "${data}" method="POST" id="addAkses">
+	<input type="hidden" value="d95cd35be241449396e92ceecb2bbf98" /><!-- id form -->
+	<div th:if="${#fields.hasErrors('global')}" class="error-box error-danger" >
+		<p th:each="err : ${#fields.errors('global')}" th:text="${err}"  class="error"/>
+	</div>
+	<div class ="form-group">
+		<label> Nama Akses </label>
+		<input
+				type = "text"
+				name = "namaAkses"
+				th:field = "*{nama}"
+				class = "form-control"
+				placeholder="Masukkan Nama Akses"
+		/>
+		<ul class="error">
+			<li th:each="err : ${#fields.errors('nama')}" th:text="${err}" class="error" />
+		</ul>
+	</div>
+
+	<div class ="form-group">
+		<label> Menu List </label>
+		<select id="ltMenu" name="ltMenu" th:field="*{ltMenu}" size="10" multiple="multiple">
+<!--		<select id="ltMenu" name="ltMenu"  size="10" multiple="multiple">-->
+<!--			<option value="" selected="selected" disabled hidden="hidden">-&#45;&#45;pilih menu-&#45;&#45;</option>-->
+			<option th:each="menuList: ${listMenu}" th:value="${menuList.id}" th:text="${menuList.nama}"></option>
+		</select>
+	</div>
+
+	<div class = "modal-footer">
+		<button type="submit" class = "btn btn-primary">
+			Submit
+		</button>
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	</div>
+</form>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+    $("#addAkses").submit(function(event) {
+          event.preventDefault(); //prevent default action
+		event.propagation
+          let post_url = $(this).attr("action"); //get form action url
+          let request_method = $(this).attr("method"); //get form GET/POST method
+          let form_data = $(this).serialize(); //Encode form elements for submission
+		console.log('masuk-sini');
+          $.ajax({
+              url: post_url,
+              type: request_method,
+              data: form_data
+            }).done(function(response) { //
+            let pattern = /d95cd35be241449396e92ceecb2bbf98/i;
+			let result = response.match(pattern);
+            if(result)
+            {
+				$("#server-results-add").html(response);
+            }
+            else
+            {
+				$('#add1').modal('hide');
+				confirm("DATA BERHASIL DISIMPAN");
+				window.location = "/akses";// ini refresh page nya
+            }
+            });
+        });
+
+/*]]>*/
+</script>
+</html>
