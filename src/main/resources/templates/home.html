@@ -10,7 +10,19 @@
 <div th:replace="~{fragment/navbar::navheader}"></div>
 <!--<div th:replace="fragment/navbar-contoh::navbar-contoh"></div>-->
 <p><h1>INI HALAMAN HOME</h1></p>
+<!--<img src="https://res.cloudinary.com/dt4ldbmza/image/upload/v1728145401/norilisa.jpg.png" alt="HTML5 Icon" style="width:128px;height:128px;">-->
+<img th:src="${URL_IMG}" alt="HTML5 Icon" style="width:128px;height:128px;">
 
+<form
+        id="uploadForm"
+        method="post"
+        th:action="@{/user/files/upload/{id}(id=${USR_NAME})}"
+        enctype="multipart/form-data">
+    <input id="input-file" type="file" name="file" />
+    <button class="btn btn-sm btn-outline-success float-right" type="submit">
+        Upload
+    </button>
+</form>
 <div th:replace="~{fragment/footer::ftr}"></div>
 </body>
 </html>

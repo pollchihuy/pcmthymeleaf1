@@ -72,6 +72,7 @@ public class GlobalFunction {
 
     public static void setGlobalFragment(Model model , WebRequest webRequest){
         model.addAttribute("USR_NAME",webRequest.getAttribute("USR_NAME",1));
+        model.addAttribute("URL_IMG",webRequest.getAttribute("URL_IMG",1));
         model.addAttribute("MENU_NAVBAR",webRequest.getAttribute("MENU_NAVBAR",1));
     }
 

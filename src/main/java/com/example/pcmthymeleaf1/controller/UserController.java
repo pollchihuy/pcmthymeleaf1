@@ -8,6 +8,7 @@ import com.example.pcmthymeleaf1.httpclient.UserService;
 import com.example.pcmthymeleaf1.util.GlobalFunction;
 import com.example.pcmthymeleaf1.util.ListPage;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Path;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -197,5 +199,29 @@ public class UserController {
         }
         model.addAttribute("pesan","Data Berhasil Dihapus");
         return ListPage.userMainPage;
+    }
+
+    @PostMapping("/files/upload/{username}")
+    public String uploadImage(
+            Model model,
+            @PathVariable(value="username") String username,
+            @RequestParam(value = "file")MultipartFile file, WebRequest webRequest){
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        if(jwt.equals(ListPage.homePage)){
+            return jwt;
+        }
+        try{
+            response = userService.uploadFile("Bearer "+jwt,username,file);
+        }catch (Exception e){
+            model.addAttribute("data",new RespUserDTO());
+            return ListPage.homePage;
+        }
+        Map<String,Object> data = (Map<String, Object>) response.getBody();
+        String urlImg = data.get("url-img").toString();
+//        model.addAttribute("pesan","Data Berhasil Diubah");
+        webRequest.setAttribute("URL_IMG",urlImg,1);
+        GlobalFunction.setGlobalFragment(model,webRequest);
+        return ListPage.homePage;
     }
 }

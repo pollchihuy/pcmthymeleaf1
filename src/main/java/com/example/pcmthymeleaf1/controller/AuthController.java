@@ -45,9 +45,11 @@ public class AuthController {
         ResponseEntity<Object> response = null;
         String menuNavBar = "";
         String tokenJwt = "";
+        String urlImg ="";
         try{
             response = authServices.login(valLoginDTO);
             Map<String,Object> map = (Map<String, Object>) response.getBody();
+            urlImg = map.get("urlImage").toString();
             List<Map<String,Object>> lt = (List<Map<String, Object>>) map.get("menu");
             menuNavBar = new GenerateStringMenu().stringMenu(lt);
             tokenJwt = map.get("token").toString();
@@ -68,7 +70,7 @@ public class AuthController {
         /** untuk di set di page home setelah login*/
         model.addAttribute("MENU_NAVBAR",menuNavBar);
         model.addAttribute("USR_NAME",valLoginDTO.getUsername());
-
+        model.addAttribute("URL_IMG",urlImg);
         return ListPage.homePage;
     }
 

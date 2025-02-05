@@ -240,19 +240,19 @@ public class AksesController {
         int listAllMenuSize = listAllMenu.size();
         int listMenuAksesSize = ltMenuAkses.size();
         List<SelectMenuDTO> selectedMenuDTO = new ArrayList<>();
-        String data1[] = new String[listAllMenuSize];//menampung data id dari all menu
+        Long data1[] = new Long[listAllMenuSize];//menampung data id dari all menu
         String data2[] = new String[listAllMenuSize];//menampung data nama dari all menu
-        String data3[] = new String[listMenuAksesSize];//menampung data id dari menu akses
+        Long data3[] = new Long[listMenuAksesSize];//menampung data id dari menu akses
         String data4[] = new String[listMenuAksesSize];//menampung data nama dari menu akses
 
         int i=0;
         int j=0;
         for (SelectMenuDTO menu : listAllMenu) {
-            data1[i]=String.valueOf(menu.getId());
+            data1[i]=menu.getId();
             data2[i]=menu.getNama();
             for(Map<String,Object> m:ltMenuAkses){
                 if(menu.getId()==Long.parseLong(m.get("id").toString())){
-                    data3[j]=String.valueOf(menu.getId());
+                    data3[j]=menu.getId();
                     data4[j]=menu.getNama();
                     j++;
                     selectedMenuDTO.add(menu);
@@ -273,23 +273,23 @@ public class AksesController {
 
     /** fungsi untuk mengambil data web yang sudah di set sebelumnya di function setDataMenuToEdit , agar tidak menghubungi server lagi meminta data yang sama */
     private void setDataTempEdit(Model model , WebRequest webRequest){
-        String data1[] = (String[]) webRequest.getAttribute("data1",1);//menampung data id dari all menu
+        Long data1[] = (Long[]) webRequest.getAttribute("data1",1);//menampung data id dari all menu
         String data2[] = (String[]) webRequest.getAttribute("data2",1);//menampung data nama dari all menu
-        String data3[] = (String[]) webRequest.getAttribute("data3",1);//menampung data id dari menu akses
+        Long data3[] = (Long[]) webRequest.getAttribute("data3",1);//menampung data id dari menu akses
         String data4[] = (String[]) webRequest.getAttribute("data4",1);//menampung data nama dari menu akses
         List<SelectMenuDTO> selectedMenuDTO = new ArrayList<>();
         List<SelectMenuDTO> listAllMenu = new ArrayList<>();
         SelectMenuDTO selectMenuDTO = null;
         for(int i=0;i<data1.length;i++){
             selectMenuDTO = new SelectMenuDTO();
-            selectMenuDTO.setId(Long.parseLong(data1[i]));
+            selectMenuDTO.setId(data1[i]);
             selectMenuDTO.setNama(data2[i]);
             listAllMenu.add(selectMenuDTO);
         }
 
         for(int i=0;i<data3.length;i++){
             selectMenuDTO = new SelectMenuDTO();
-            selectMenuDTO.setId(Long.parseLong(data3[i]));
+            selectMenuDTO.setId(data3[i]);
             selectMenuDTO.setNama(data4[i]);
             selectedMenuDTO.add(selectMenuDTO);
         }
