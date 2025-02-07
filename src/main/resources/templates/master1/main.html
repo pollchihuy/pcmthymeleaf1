@@ -7,7 +7,7 @@
     <link th:href="@{/css/style.css}" rel="stylesheet">
     <script type="text/javascript"  th:src="@{/js/modals.js}"></script>
     <script type="text/javascript"  th:src="@{/js/action.js}"></script>
-    <title>User</title>
+    <title>Master1</title>
 </head>
 <body>
     <div th:replace="~{fragment/navbar::navheader}"></div>
@@ -16,7 +16,7 @@
         <button type="button"
                 th:data-title="'ADD'"
                 th:data-server="'#server-results-add'"
-                th:onclick="funcModalsHandler(event)"
+                onclick="funcModalsHandler(event)"
                 th:data-url="'/'+${pathServer}+'/a'"
                 class="btn btn-primary" data-toggle="modal" data-target="#add1">
             ADD
@@ -28,9 +28,9 @@
     </div>
 
     <div th:replace="~{fragment/pagination::paging}"></div>
+
 <th:block th:replace="~{fragment/modals-add::modalsAdd('add1')}">modalAdd</th:block>
 <th:block th:replace="~{fragment/modals-edit::modalzEdit('edit1')}">modalEdit</th:block>
-<th:block th:replace="~{fragment/modals-data-table::modalsTable('dataTable')}">modalsData</th:block>
 
 
 <script type="text/javascript" th:src="@{/webjars/popper.js/umd/popper.min.js}"></script><!--wajib ada untuk modals-->

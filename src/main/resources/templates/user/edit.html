@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<form  th:action="@{/user/a}"
-	   th:object = "${data}" method="POST" id="addUser">
-	<input type="hidden" value="6155ffa01fed495dbf865dd11a5af11a" /><!-- id form -->
+<form  th:action="@{/user/e/{id}(id=${data.id})}"
+	   th:object = "${data}" method="POST" id="editUser">
+	<input type="hidden" value="6832bbe088324b2c8b0e5dbee11ce0b7" /><!-- id form -->
 	<div th:if="${#fields.hasErrors('global')}" class="error-box error-danger" >
 		<p th:each="err : ${#fields.errors('global')}" th:text="${err}"  class="error"/>
 	</div>
@@ -132,7 +132,7 @@
 
 <script th:inline="javascript">
 /*<![CDATA[*/
-    $("#addUser").submit(function(event) {
+    $("#editUser").submit(function(event) {
           event.preventDefault(); //prevent default action
           let post_url = $(this).attr("action"); //get form action url
           let request_method = $(this).attr("method"); //get form GET/POST method
@@ -142,16 +142,16 @@
               type: request_method,
               data: form_data
             }).done(function(response) { //
-            let pattern = /6155ffa01fed495dbf865dd11a5af11a/i;
+            let pattern = /6832bbe088324b2c8b0e5dbee11ce0b7/i;
 			let result = response.match(pattern);
             if(result)
             {
-				$("#server-results-add").html(response);
+				$("#server-results-edit").html(response);
             }
             else
             {
 				$('#add1').modal('hide');
-				confirm("DATA BERHASIL DISIMPAN");
+				confirm("DATA BERHASIL DIUBAH");
 				window.location = "/user";// ini refresh page nya
             }
             });

@@ -49,7 +49,8 @@ public class AuthController {
         try{
             response = authServices.login(valLoginDTO);
             Map<String,Object> map = (Map<String, Object>) response.getBody();
-            urlImg = map.get("urlImage").toString();
+
+            urlImg = map.get("urlImage")==null?null:map.get("urlImage").toString();
             List<Map<String,Object>> lt = (List<Map<String, Object>>) map.get("menu");
             menuNavBar = new GenerateStringMenu().stringMenu(lt);
             tokenJwt = map.get("token").toString();
@@ -58,7 +59,7 @@ public class AuthController {
 //
 //            }
             model.addAttribute("usr",new ValLoginDTO());
-            result.addError(new ObjectError("globalError",e.getCause().getMessage()));
+            result.addError(new ObjectError("globalError",e.getMessage()==null?e.getCause().getMessage():e.getMessage()));
             return ListPage.loginPage;
         }
         /** untuk di set di table session */

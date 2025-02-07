@@ -32,7 +32,10 @@ public class AksesController {
     @Autowired
     private MenuService menuService;
 
-
+    private Map<String,Object> filterColumn=new HashMap<>();
+    public AksesController() {
+        filterColumn.put("nama","Nama Akses");
+    }
     @GetMapping
     public String findAll(Model model, WebRequest webRequest){
         ResponseEntity<Object> response = null;
@@ -49,16 +52,19 @@ public class AksesController {
         }
 
         Map<String,Object> map = (Map<String, Object>) response.getBody();
-        GlobalFunction.setDataTable(model,map,"akses");
-        GlobalFunction.setGlobalFragment(model,webRequest);
+        GlobalFunction.statusOK(model,"akses",webRequest,map,filterColumn);
         return ListPage.aksesMainPage;
     }
 
-    @GetMapping("/{idComp}/{descComp}")
-    public String dataTable(Model model,
-                            @PathVariable(value = "idComp") String idComp,
-                            @PathVariable(value = "descComp") String descComp,
-                WebRequest webRequest){
+    @GetMapping("/{sort}/{sortBy}/{page}")
+    public String findByParam(
+            @PathVariable(value = "sort") String sort,
+            @PathVariable(value = "sortBy") String sortBy,//name
+            @PathVariable(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value,
+            Model model, WebRequest webRequest){
         ResponseEntity<Object> response = null;
         String jwt = GlobalFunction.tokenCheck(model,webRequest);
         if(jwt.equals(ListPage.loginPage)){
@@ -66,14 +72,45 @@ public class AksesController {
         }
 
         try{
-            response = aksesService.findAll("Bearer "+jwt);
+            page = page!=0?(page-1):page;
+            response = aksesService.findByParam("Bearer "+jwt,sort,sortBy,page,size,column,value);
         }catch (Exception e){
-            model.addAttribute("usr", new ValLoginDTO());
-            return ListPage.loginPage;
+            GlobalFunction.statusNotFound(model,"akses",webRequest,filterColumn,e.getCause().getMessage());
+            return ListPage.menuMainPage;
         }
 
         Map<String,Object> map = (Map<String, Object>) response.getBody();
-        GlobalFunction.setDataTable(model,map,"akses");
+        GlobalFunction.statusOK(model,"akses",webRequest,map,filterColumn);
+        return ListPage.menuMainPage;
+    }
+
+    @GetMapping("/{idComp}/{descComp}/{sort}/{sortBy}/{page}")
+    public String dataTable(Model model,
+                            @PathVariable(value = "sort") String sort,
+                            @PathVariable(value = "sortBy") String sortBy,//name
+                            @PathVariable(value = "page") Integer page,
+                            @RequestParam(value = "size") Integer size,
+                            @RequestParam(value = "column") String column,
+                            @RequestParam(value = "value") String value,
+                            @PathVariable(value = "idComp") String idComp,
+                            @PathVariable(value = "descComp") String descComp,
+                WebRequest webRequest){
+        ResponseEntity<Object> response = null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        page = page!=0?(page-1):page;
+        if(jwt.equals(ListPage.loginPage)){
+            return jwt;
+        }
+
+        try{
+            response = aksesService.findByParam("Bearer "+jwt,sort,sortBy,page,size,column,value);
+        }catch (Exception e){
+            GlobalFunction.statusNotFoundDataMaster(model,"akses",webRequest,filterColumn,e.getCause().getMessage());
+            return ListPage.dataTableModals;
+        }
+
+        Map<String,Object> map = (Map<String, Object>) response.getBody();
+        GlobalFunction.statusOKDataMaster(model,"akses",webRequest,map,filterColumn);
         model.addAttribute("idComp", idComp);
         model.addAttribute("descComp",descComp);
         return ListPage.dataTableModals;

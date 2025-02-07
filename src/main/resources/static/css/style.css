@@ -6,6 +6,8 @@
  ul {
      list-style: none ;
      background: #22438C;
+     /*background: darkred;*/
+     /*float:right;*/
  }
  ul li {
      display: inline-block;

@@ -155,9 +155,6 @@ public class UserController {
             @PathVariable(value = "id") Long id,
             WebRequest webRequest){
         valUserDTO.setId(id);//ketika gagal submit id nya harus diset , karena tidak ada di dalam body request
-        /** ketentuan untuk relasi, kalau semisal object nya tidak null, akan tetapi id nya null maka akan menyebabkan internal server error
-         *  jadi kita butuh validasi khusus untuk relasinya , semisal nilainya tidak di set di sisi web maka kita null kan object nya -- aturan JPA
-         */
         if(valUserDTO.getAkses().getId()==null){
             valUserDTO.setAkses(null);
         }

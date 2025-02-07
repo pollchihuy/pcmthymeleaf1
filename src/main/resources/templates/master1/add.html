@@ -1,16 +1,16 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<form  th:action="@{/menu/a}"
-	   th:object = "${data}" method="POST" id="addMenu">
-	<input type="hidden" value="6155ffa01fed495dbf865dd11a5af11a" /><!-- id form -->
+<form  th:action="@{/master1/a}"
+	   th:object = "${data}" method="POST" id="addMaster1">
+	<input type="hidden" value="e3af518a45764523ae9adaffd9cdfd5d" /><!-- id form -->
 	<div th:if="${#fields.hasErrors('global')}" class="error-box error-danger" >
 		<p th:each="err : ${#fields.errors('global')}" th:text="${err}"  class="error"/>
 	</div>
 	<div class ="form-group">
-		<label>Nama Menu</label>
+		<label> Nama Master1 </label>
 		<input
 				type = "text"
-				name = "namaMenuHeader"
+				name = "deskripsi"
 				th:field = "*{nama}"
 				class = "form-control"
 				placeholder="Masukkan Nama Group"
@@ -19,40 +19,47 @@
 			<li th:each="err : ${#fields.errors('nama')}" th:text="${err}" class="error" />
 		</ul>
 	</div>
+
 	<div class ="form-group">
-		<label>Path</label>
+		<label> Deskripsi </label>
 		<input
 				type = "text"
-				name = "pathMenu"
-				th:field = "*{path}"
+				name = "deskripsi"
+				th:field = "*{deskripsi}"
 				class = "form-control"
-				placeholder="Masukkan Path"
+				placeholder="Masukkan Deskripsi"
 		/>
 		<ul>
-			<li th:each="err : ${#fields.errors('path')}" th:text="${err}" class="error" />
+			<li th:each="err : ${#fields.errors('deskripsi')}" th:text="${err}" class="error" />
 		</ul>
 	</div>
+
 	<div class ="form-group">
-		<label>Group Menu</label>
+		<label> Total </label>
 		<input
-				type = "text"
-				id="namaGroup"
-				name = "namaGroupMenu"
-				th:field = "*{groupMenu.nama}"
+				type = "number"
+				name = "total"
+				th:field = "*{total}"
 				class = "form-control"
-				placeholder="Pilih"
-				disabled="disabled"
+				placeholder="Masukkan Total"
 		/>
-		<input type="hidden" th:field="*{groupMenu.id}" id="idGroup" />
-		<button
-				th:id="pilih-data"
-				th:onclick="funcModalsDataTableHandler('DataGroupMenu','#dataTable','/group-menu/idGroup/namaGroup/asc/id/0?column=id&value=&size=5','#data-result')"
-				data-toggle="modal" data-target="#dataTable"
-				class="btn btn-primary" type="button">
-			Pilih
-		</button>
 		<ul>
-			<li th:each="err : ${#fields.errors('path')}" th:text="${err}" class="error" />
+			<li th:each="err : ${#fields.errors('total')}" th:text="${err}" class="error" />
+		</ul>
+	</div>
+
+
+	<div class ="form-group">
+		<label> Jumlah </label>
+		<input
+				type = "number"
+				name = "total"
+				th:field = "*{jumlah}"
+				class = "form-control"
+				placeholder="Masukkan Jumlah"
+		/>
+		<ul>
+			<li th:each="err : ${#fields.errors('jumlah')}" th:text="${err}" class="error" />
 		</ul>
 	</div>
 
@@ -64,10 +71,9 @@
 	</div>
 </form>
 
-
 <script th:inline="javascript">
 /*<![CDATA[*/
-    $("#addMenu").submit(function(event) {
+    $("#addMaster1").submit(function(event) {
           event.preventDefault(); //prevent default action
           let post_url = $(this).attr("action"); //get form action url
           let request_method = $(this).attr("method"); //get form GET/POST method
@@ -77,7 +83,7 @@
               type: request_method,
               data: form_data
             }).done(function(response) { //
-            let pattern = /6155ffa01fed495dbf865dd11a5af11a/i;
+            let pattern = /e3af518a45764523ae9adaffd9cdfd5d/i;
 			let result = response.match(pattern);
             if(result)
             {
@@ -87,7 +93,7 @@
             {
 				$('#add1').modal('hide');
 				confirm("DATA BERHASIL DISIMPAN");
-				window.location = "/menu";// ini refresh page nya
+				window.location = "/group-menu";// ini refresh page nya
             }
             });
         });

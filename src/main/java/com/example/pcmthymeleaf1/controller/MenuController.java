@@ -139,7 +139,7 @@ public class MenuController {
             result.addError(new ObjectError("globalError",e.getCause().getMessage()));
             return ListPage.menuAddPage;
         }
-        model.addAttribute("pesan","Data Berhasil Diubah");
+        model.addAttribute("pesan","Data Berhasil Disimpan");
         return ListPage.menuMainPage;
     }
 

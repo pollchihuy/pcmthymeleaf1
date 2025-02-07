@@ -1,10 +1,10 @@
 package com.example.pcmthymeleaf1.controller;
 
 
-import com.example.pcmthymeleaf1.dto.response.RespGroupMenuDTO;
-import com.example.pcmthymeleaf1.dto.validasi.ValGroupMenuDTO;
+import com.example.pcmthymeleaf1.dto.response.RespMaster1DTO;
+import com.example.pcmthymeleaf1.dto.validasi.ValMaster1DTO;
 import com.example.pcmthymeleaf1.dto.validasi.ValLoginDTO;
-import com.example.pcmthymeleaf1.httpclient.GroupMenuService;
+import com.example.pcmthymeleaf1.httpclient.Master1Service;
 import com.example.pcmthymeleaf1.util.GlobalFunction;
 import com.example.pcmthymeleaf1.util.ListPage;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,18 +17,22 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
-@RequestMapping("group-menu")
-public class GroupMenuController {
+@RequestMapping("master1")
+public class Master1Controller {
 
     @Autowired
-    private GroupMenuService groupMenuService;
+    private Master1Service master1Service;
     private Map<String,Object> filterColumn=new HashMap<>();
 
-    public GroupMenuController() {
-        filterColumn.put("nama","Nama Group");
+    public Master1Controller() {
+        filterColumn.put("nama","Nama Master 1");
+        filterColumn.put("total","Total");
+        filterColumn.put("jumlah","Jumlah");
+        filterColumn.put("deskripsi","Deskripsi");
     }
 
     @GetMapping
@@ -40,16 +44,17 @@ public class GroupMenuController {
         }
 
         try{
-            response = groupMenuService.findAll("Bearer "+jwt);
+            response = master1Service.findAll("Bearer "+jwt);
         }catch (Exception e){
             model.addAttribute("usr", new ValLoginDTO());
             return ListPage.loginPage;
         }
 
         Map<String,Object> map = (Map<String, Object>) response.getBody();
-//        GlobalFunction.setDataTable(model,map,"group-menu");
-        GlobalFunction.statusOK(model,"group-menu",webRequest,map,filterColumn);
-        return ListPage.groupMenuMainPage;
+        GlobalFunction.setDataTable(model,map,"master1");
+        GlobalFunction.setGlobalFragment(model,webRequest);
+        model.addAttribute("filterColumn",filterColumn);
+        return ListPage.master1MainPage;
     }
 
     @GetMapping("/{idComp}/{descComp}/{sort}/{sortBy}/{page}")
@@ -71,14 +76,14 @@ public class GroupMenuController {
         }
 
         try{
-            response = groupMenuService.findByParam("Bearer "+jwt,sort,sortBy,page,size,column,value);
+            response = master1Service.findByParam("Bearer "+jwt,sort,sortBy,page,size,column,value);
         }catch (Exception e){
-            GlobalFunction.statusNotFoundDataMaster(model,"group-menu",webRequest,filterColumn,e.getCause().getMessage());
+            GlobalFunction.statusNotFoundDataMaster(model,"master1",webRequest,filterColumn,e.getCause().getMessage());
             return ListPage.dataTableModals;
         }
 
         Map<String,Object> map = (Map<String, Object>) response.getBody();
-        GlobalFunction.statusOKDataMaster(model,"group-menu",webRequest,map,filterColumn);
+        GlobalFunction.statusOKDataMaster(model,"master1",webRequest,map,filterColumn);
         model.addAttribute("idComp", idComp);
         model.addAttribute("descComp",descComp);
         return ListPage.dataTableModals;
@@ -101,15 +106,15 @@ public class GroupMenuController {
 
         try{
             page = page!=0?(page-1):page;
-            response = groupMenuService.findByParam("Bearer "+jwt,sort,sortBy,page,size,column,value);
+            response = master1Service.findByParam("Bearer "+jwt,sort,sortBy,page,size,column,value);
         }catch (Exception e){
-            GlobalFunction.statusNotFound(model,"group-menu",webRequest,filterColumn,e.getCause().getMessage());
-            return ListPage.menuMainPage;
+            GlobalFunction.statusNotFound(model,"master1",webRequest,filterColumn,e.getCause().getMessage());
+            return ListPage.master1MainPage;
         }
 
         Map<String,Object> map = (Map<String, Object>) response.getBody();
-        GlobalFunction.statusOK(model,"group-menu",webRequest,map,filterColumn);
-        return ListPage.menuMainPage;
+        GlobalFunction.statusOK(model,"master1",webRequest,map,filterColumn);
+        return ListPage.master1MainPage;
     }
 
     @GetMapping("/e/{id}")
@@ -120,17 +125,17 @@ public class GroupMenuController {
             return jwt;
         }
         try{
-            response = groupMenuService.findById("Bearer "+jwt,id);
+            response = master1Service.findById("Bearer "+jwt,id);
         }catch (Exception e){
             model.addAttribute("pesan", e.getCause().getMessage());
-            return ListPage.groupMenuMainPage;
+            return ListPage.master1MainPage;
         }
         Map<String,Object> map = (Map<String, Object>) response.getBody();
         Map<String,Object> mapData = (Map<String, Object>) map.get("data");
 //        ObjectMapper objectMapper = new ObjectMapper();
-//        RespGroupMenuDTO respGroupMenuDTO = objectMapper.convertValue(mapData, RespGroupMenuDTO.class);
-        model.addAttribute("data",new ObjectMapper().convertValue(mapData,RespGroupMenuDTO.class));
-        return ListPage.groupMenuEditPage;
+//        RespMaster1DTO respGroupMenuDTO = objectMapper.convertValue(mapData, RespMaster1DTO.class);
+        model.addAttribute("data",new ObjectMapper().convertValue(mapData,RespMaster1DTO.class));
+        return ListPage.master1EditPage;
     }
 
     @GetMapping("/a")
@@ -140,18 +145,18 @@ public class GroupMenuController {
         if(jwt.equals(ListPage.loginPage)){
             return jwt;
         }
-        model.addAttribute("data",new RespGroupMenuDTO());
-        return ListPage.groupMenuAddPage;
+        model.addAttribute("data",new RespMaster1DTO());
+        return ListPage.master1AddPage;
     }
 
     @PostMapping("/a")
     public String save(
-            @ModelAttribute("data") @Valid ValGroupMenuDTO valGroupMenuDTO,
+            @ModelAttribute("data") @Valid ValMaster1DTO valMaster1DTO,
             BindingResult result,
             Model model, WebRequest webRequest){
         if(result.hasErrors()){
-            model.addAttribute("data",valGroupMenuDTO);
-            return ListPage.groupMenuAddPage;
+            model.addAttribute("data",valMaster1DTO);
+            return ListPage.master1AddPage;
         }
         ResponseEntity<Object> response = null;
         String jwt = GlobalFunction.tokenCheck(model,webRequest);
@@ -160,27 +165,27 @@ public class GroupMenuController {
         }
 
         try{
-            response = groupMenuService.save("Bearer "+jwt,valGroupMenuDTO);
+            response = master1Service.save("Bearer "+jwt,valMaster1DTO);
         }catch (Exception e){
             model.addAttribute("usr",new ValLoginDTO());
             return ListPage.loginPage;
         }
         model.addAttribute("pesan","Data Berhasil Diubah");
-        return ListPage.groupMenuMainPage;
+        return ListPage.master1MainPage;
     }
 
     @PostMapping("/e/{id}")
     public String edit(
-            @ModelAttribute("data") @Valid ValGroupMenuDTO valGroupMenuDTO,
+            @ModelAttribute("data") @Valid ValMaster1DTO valMaster1DTO,
             BindingResult result,
             Model model,
             @PathVariable(value = "id") Long id,
             WebRequest webRequest){
-        valGroupMenuDTO.setId(id);
+        valMaster1DTO.setId(id);
 
         if(result.hasErrors()){
-            model.addAttribute("data",valGroupMenuDTO);
-            return ListPage.groupMenuEditPage;
+            model.addAttribute("data",valMaster1DTO);
+            return ListPage.master1EditPage;
         }
         ResponseEntity<Object> response = null;
         String jwt = GlobalFunction.tokenCheck(model,webRequest);
@@ -188,13 +193,13 @@ public class GroupMenuController {
             return jwt;
         }
         try{
-            response = groupMenuService.update("Bearer "+jwt,id,valGroupMenuDTO);
+            response = master1Service.update("Bearer "+jwt,id,valMaster1DTO);
         }catch (Exception e){
             model.addAttribute("usr",new ValLoginDTO());
             return ListPage.loginPage;
         }
         model.addAttribute("pesan","Data Berhasil Diubah");
-        return ListPage.groupMenuMainPage;
+        return ListPage.master1MainPage;
     }
 
     @GetMapping("/d/{id}")
@@ -205,12 +210,12 @@ public class GroupMenuController {
             return jwt;
         }
         try {
-            response = groupMenuService.delete("Bearer "+jwt,id);
+            response = master1Service.delete("Bearer "+jwt,id);
         }catch (Exception e){
             model.addAttribute("usr",new ValLoginDTO());
             return ListPage.loginPage;
         }
         model.addAttribute("pesan","Data Berhasil Dihapus");
-        return ListPage.groupMenuMainPage;
+        return ListPage.master1MainPage;
     }
 }

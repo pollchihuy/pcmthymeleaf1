@@ -3,12 +3,13 @@
 
 <div class="container mt-4" th:fragment="filter-form">
     <div class="col-md-12">
-        <div class="row">
+        <div class="row" >
+<!--            page=${(currentPage*sizePerPage)>totalData?0:currentPage},-->
             <!-- logikanya jika pada saat totalData > (currentPage * page) maka pagination akan error. Oleh karena itu diberikan kondisi mencegah hal itu-->
             <form th:action="@{/{pathServer}/{sort}/{sortBy}/{page}?column={columnName}&value={value}
 					 (
 					 pathServer=${pathServer},
-					 page=${(currentPage*sizePerPage)>totalData?0:currentPage},
+					 page=${currentPage},
 						sort=${sort},
 						sortBy=${sortBy},
 						columnName=${columnName},

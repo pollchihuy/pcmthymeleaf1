@@ -11,7 +11,8 @@
 <!--<div th:replace="fragment/navbar-contoh::navbar-contoh"></div>-->
 <p><h1>INI HALAMAN HOME</h1></p>
 <!--<img src="https://res.cloudinary.com/dt4ldbmza/image/upload/v1728145401/norilisa.jpg.png" alt="HTML5 Icon" style="width:128px;height:128px;">-->
-<img th:src="${URL_IMG}" alt="HTML5 Icon" style="width:128px;height:128px;">
+<img th:if="${URL_IMG!=null}" th:src="${URL_IMG}" alt="HTML5 Icon" style="width:128px;height:128px;">
+<img th:unless="${URL_IMG!=null}" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="HTML5 Icon" style="width:128px;height:128px;">
 
 <form
         id="uploadForm"
