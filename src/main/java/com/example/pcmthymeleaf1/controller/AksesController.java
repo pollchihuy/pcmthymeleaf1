@@ -10,8 +10,15 @@ import com.example.pcmthymeleaf1.httpclient.MenuService;
 import com.example.pcmthymeleaf1.util.GlobalFunction;
 import com.example.pcmthymeleaf1.util.ListPage;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.Response;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +26,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -114,6 +122,54 @@ public class AksesController {
         model.addAttribute("idComp", idComp);
         model.addAttribute("descComp",descComp);
         return ListPage.dataTableModals;
+    }
+    @GetMapping("/pdf")
+    public ResponseEntity<Resource> pdf(
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value,
+            Model model, WebRequest webRequest, HttpServletResponse webResponse){
+        Response response = null;
+        ByteArrayResource resource =null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        String fileName = "";
+        try{
+            response= aksesService.downloadPDF("Bearer "+jwt,column,value);
+            fileName = response.headers().get("Content-Disposition").toString();
+            InputStream inputStream = response.body().asInputStream();
+            resource = new ByteArrayResource(IOUtils.toByteArray(inputStream));
+        }catch (Exception e){
+//            GlobalFunction.statusNotFound(model,"group-menu",webRequest,filterColumn,e.getCause().getMessage());
+//            return ListPage.menuMainPage;
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Disposition",fileName);
+        return ResponseEntity.ok().headers(headers)
+                .contentType(MediaType.parseMediaType
+                        ("application/octet-stream")).body(resource);
+    }
+
+    @GetMapping("/excel")
+    public ResponseEntity<Resource> excel(
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value,
+            Model model, WebRequest webRequest, HttpServletResponse webResponse){
+        Response response = null;
+        ByteArrayResource resource =null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        String fileName = "";
+        try{
+            response= aksesService.downloadExcel("Bearer "+jwt,column,value);
+            fileName = response.headers().get("Content-Disposition").toString();
+            InputStream inputStream = response.body().asInputStream();
+            resource = new ByteArrayResource(IOUtils.toByteArray(inputStream));
+        }catch (Exception e){
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Disposition",fileName.substring(0,fileName.length()-1));
+        return ResponseEntity.ok().headers(headers)
+                .contentType(MediaType.parseMediaType
+                        ("application/octet-stream")).body(resource);
     }
 
     @GetMapping("/e/{id}")

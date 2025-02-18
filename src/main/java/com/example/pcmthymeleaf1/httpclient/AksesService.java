@@ -1,6 +1,7 @@
 package com.example.pcmthymeleaf1.httpclient;
 
 import com.example.pcmthymeleaf1.dto.validasi.ValAksesDTO;
+import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,18 @@ public interface AksesService {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@RequestHeader("Authorization") String token, @PathVariable(value = "id") Long id);
+
+    @GetMapping("/pdf")
+    public Response downloadPDF(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value);
+
+    @GetMapping("/excel")
+    public Response downloadExcel(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value);
 
     @GetMapping("/{sort}/{sortBy}/{page}")
     public ResponseEntity<Object> findByParam(

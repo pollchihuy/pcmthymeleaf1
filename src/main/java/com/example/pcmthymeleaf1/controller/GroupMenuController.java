@@ -8,8 +8,15 @@ import com.example.pcmthymeleaf1.httpclient.GroupMenuService;
 import com.example.pcmthymeleaf1.util.GlobalFunction;
 import com.example.pcmthymeleaf1.util.ListPage;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.Response;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import java.io.InputStream;
 import java.util.*;
 
 @Controller
@@ -49,6 +57,8 @@ public class GroupMenuController {
         Map<String,Object> map = (Map<String, Object>) response.getBody();
 //        GlobalFunction.setDataTable(model,map,"group-menu");
         GlobalFunction.statusOK(model,"group-menu",webRequest,map,filterColumn);
+//        model.addAttribute("columnName", "id");
+//        model.addAttribute("value", "5");
         return ListPage.groupMenuMainPage;
     }
 
@@ -104,12 +114,59 @@ public class GroupMenuController {
             response = groupMenuService.findByParam("Bearer "+jwt,sort,sortBy,page,size,column,value);
         }catch (Exception e){
             GlobalFunction.statusNotFound(model,"group-menu",webRequest,filterColumn,e.getCause().getMessage());
-            return ListPage.menuMainPage;
+            return ListPage.groupMenuMainPage;
         }
 
         Map<String,Object> map = (Map<String, Object>) response.getBody();
         GlobalFunction.statusOK(model,"group-menu",webRequest,map,filterColumn);
-        return ListPage.menuMainPage;
+        return ListPage.groupMenuMainPage;
+    }
+
+    @GetMapping("/pdf")
+    public ResponseEntity<Resource> pdf(
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value,
+            Model model, WebRequest webRequest, HttpServletResponse webResponse){
+        Response response = null;
+        ByteArrayResource resource =null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        String fileName = "";
+        try{
+            response= groupMenuService.downloadPDF("Bearer "+jwt,column,value);
+            fileName = response.headers().get("Content-Disposition").toString();
+            InputStream inputStream = response.body().asInputStream();
+            resource = new ByteArrayResource(IOUtils.toByteArray(inputStream));
+        }catch (Exception e){
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Disposition",fileName);
+        return ResponseEntity.ok().headers(headers)
+                .contentType(MediaType.parseMediaType
+                        ("application/octet-stream")).body(resource);
+    }
+
+    @GetMapping("/excel")
+    public ResponseEntity<Resource> excel(
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value,
+            Model model, WebRequest webRequest, HttpServletResponse webResponse){
+        Response response = null;
+        ByteArrayResource resource =null;
+        String jwt = GlobalFunction.tokenCheck(model,webRequest);
+        String fileName = "";
+        try{
+            response= groupMenuService.downloadExcel("Bearer "+jwt,column,value);
+            fileName = response.headers().get("Content-Disposition").toString();
+            InputStream inputStream = response.body().asInputStream();
+            resource = new ByteArrayResource(IOUtils.toByteArray(inputStream));
+        }catch (Exception e){
+        }
+        HttpHeaders headers = new HttpHeaders();// .xlxs]
+        headers.set("Content-Disposition",fileName.substring(0,fileName.length()-1));
+        return ResponseEntity.ok().headers(headers)
+                .contentType(MediaType.parseMediaType
+                        ("application/octet-stream")).body(resource);
     }
 
     @GetMapping("/e/{id}")

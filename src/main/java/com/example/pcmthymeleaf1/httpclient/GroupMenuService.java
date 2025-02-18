@@ -2,6 +2,7 @@ package com.example.pcmthymeleaf1.httpclient;
 
 import com.example.pcmthymeleaf1.dto.validasi.ValGroupMenuDTO;
 import com.example.pcmthymeleaf1.model.GroupMenu;
+import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,18 @@ public interface GroupMenuService {
             @PathVariable(value = "sortBy") String sortBy,//name
             @PathVariable(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value);
+
+    @GetMapping("/pdf")
+    public Response downloadPDF(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value);
+
+    @GetMapping("/excel")
+    public Response downloadExcel(
+            @RequestHeader("Authorization") String token,
             @RequestParam(value = "column") String column,
             @RequestParam(value = "value") String value);
 

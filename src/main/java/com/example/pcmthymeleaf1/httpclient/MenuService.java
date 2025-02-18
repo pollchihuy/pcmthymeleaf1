@@ -2,6 +2,7 @@ package com.example.pcmthymeleaf1.httpclient;
 
 import com.example.pcmthymeleaf1.dto.validasi.ValGroupMenuDTO;
 import com.example.pcmthymeleaf1.dto.validasi.ValMenuDTO;
+import feign.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,22 @@ public interface MenuService {
             @RequestParam(value = "column") String column,
             @RequestParam(value = "value") String value);
 
+    @GetMapping("/pdf")
+    public Response downloadPDF(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value);
+
+    @GetMapping("/excel")
+    public Response downloadExcel(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value);
+
+
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@RequestHeader("Authorization") String token, @PathVariable(value = "id") Long id);
+
 
     @PostMapping("")
     public ResponseEntity<Object> save(@RequestHeader("Authorization") String token,@RequestBody ValMenuDTO valMenuDTO);
